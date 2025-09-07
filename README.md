@@ -41,13 +41,15 @@ open_clip_torch==2.32.0
 
 ---
 
-## Data Preparation
+## 📦 Data Preparation
 
 ### Step 2. Download Required Files
 
-- Precomputed features (appearance, motion)
-- `meta` files (e.g., `frame_labels_*.npy`, `test_lengths_*.npy`)
-- 6 `.tar.gz` patch files (train/test per dataset)
+Download the following required files from cknn authors' google drive:
+
+- **[Download Precomputed Features](https://drive.google.com/file/d/1FT97l_fN6rvvXYRvEnq4SKoIOyP8RNOK/view)**
+- **[Download Meta Data](https://drive.google.com/file/d/1BmoY_BQnXxMnS8etydHMaqXg13c3uJ7l/view)**
+- **[Download Patches (6 files)](https://drive.google.com/drive/folders/1PK7-0K-it4Ldt-uSYNtCbj1-TKzafYBi)**
 
 ### Step 3. Extract and Organize
 
