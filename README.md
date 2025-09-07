@@ -129,7 +129,7 @@ python main2_evaluate.py --config configs/ped2.yaml --dataset_name ped2
 ```
 
 This computes:
-- CKNN-only AUROC
+- CKNN-only AUROC with DI explanations
 - Fused CKNN + DI AUROC
 
 ---
