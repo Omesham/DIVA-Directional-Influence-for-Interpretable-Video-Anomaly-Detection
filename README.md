@@ -75,10 +75,10 @@ CKNN/
 ### Step 4. Generate Pseudo Anomaly Scores (CKNN)
 
 ```bash
-./run1_pseudo_anomaly_scores.sh avenue
+./run1_pseudo_anomaly_scores.sh ped2
 ```
 
-> Replace `ped2` with `shanghaitech` as needed.
+> Replace `ped2` with `shanghaitech` if shanghaitech.
 
 ---
 
