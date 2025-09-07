@@ -3,16 +3,17 @@
 import os, sys
 from openai import OpenAI
 
-# Prefer GPT-4 family for stable plain-text; fall back to GPT-5 if available
+# Prefer GPT-5 family for stable plain-text;
 PREFERRED_MODELS = [
     "gpt-4.1", "gpt-4o", "gpt-4o-mini",
     "gpt-5", "gpt-5-mini", "gpt-5-chat-latest"
 ]
 
 MAX_COMPLETION_TOKENS = 400
+# Set number of prompts per type (15 normal textual prompts and 15 abnromal textual prompts)
 N_EVENTS_PER_BUCKET = 15
 
-# ---- Your object classes (only these may appear in outputs) ----
+# ---- Object classes (only these may appear in outputs) ----
 OBJECT_CLASSES = ["persons", "bench", "bicycle", "motorized cart", "skateboard"]
 
 SYSTEM_MSG = (
