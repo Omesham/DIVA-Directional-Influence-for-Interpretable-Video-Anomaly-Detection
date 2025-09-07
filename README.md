@@ -113,7 +113,7 @@ This saves text embeddings needed for the directional influence calculations.
 Run the DIVA directional influence computation:
 
 ```bash
-python create_di_scores.py --config configs/avenue.yaml --dataset_name avenue
+python create_di_scores.py --config configs/ped2.yaml --dataset_name ped2
 ```
 
 This computes per-frame DI scores using the CLIP-aligned concept vectors.
@@ -125,7 +125,7 @@ This computes per-frame DI scores using the CLIP-aligned concept vectors.
 Finally, fuse the scores and evaluate AUROC:
 
 ```bash
-python main2_evaluate.py --config configs/avenue.yaml --dataset_name avenue
+python main2_evaluate.py --config configs/ped2.yaml --dataset_name ped2
 ```
 
 This computes:
