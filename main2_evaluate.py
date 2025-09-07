@@ -20,8 +20,8 @@ rcParams['font.family'] = 'serif'
 rcParams['font.serif'] = ['Times New Roman', 'DejaVu Serif', 'serif']
 rcParams['font.weight'] = 'bold'
 
-# --- Global look & size ---
-FIGSIZE = (30, 16)  # bigger figures everywhere
+
+FIGSIZE = (30, 16)  
 
 rcParams.update({
     "figure.figsize": FIGSIZE,
@@ -56,7 +56,7 @@ torch.use_deterministic_algorithms(True)
 base_dir = os.getcwd()
 
 
-
+# STC textual prompts uncomment if stc
 # normal_prompts = [
 #     "pedestrians walking together on a campus walkway",
 #     "several students strolling side by side along the sidewalk",
@@ -68,20 +68,22 @@ base_dir = os.getcwd()
 #     "a skateboarder gliding along the sidewalk",
 #     "a person driving a maintenance cart on the pedestrian path"   
 # ]
-normal_prompts = [   
-    "group of people walking",
-    "a group chatting casually while sitted",
-    "sitting quietly on a bench",
-    "a group sitting on a bench or ledge by the walkway"
-]
 
-#Refined Anomalous Prompts
-anomalous_prompts = [
-    "a person riding a bicycle",
-    "a person skateboarding",
-    "a tricycle driving through the pedestrian walkway",
-    "two individuals chasing each other"
-]
+# Ped textual prompts uncomment if ped2
+# normal_prompts = [   
+#     "group of people walking",
+#     "a group chatting casually while sitted",
+#     "sitting quietly on a bench",
+#     "a group sitting on a bench or ledge by the walkway"
+# ]
+
+# #Refined Anomalous Prompts
+# anomalous_prompts = [
+#     "a person riding a bicycle",
+#     "a person skateboarding",
+#     "a tricycle driving through the pedestrian walkway",
+#     "two individuals chasing each other"
+# ]
 
 prompts = normal_prompts + anomalous_prompts 
 
@@ -95,8 +97,8 @@ def gaussian_video_d(d, sigma=3):
 
 
 def calc_AUROC_d(dataset_name, d):
-    lengths = np.load(f'/mmfs1/scratch/ojanigala/Anomaly-Detection-CKNN-PyTorch/meta/test_lengths_{dataset_name}.npy')
-    labels = np.load(f'/mmfs1/scratch/ojanigala/Anomaly-Detection-CKNN-PyTorch/meta/frame_labels_{dataset_name}.npy')
+    lengths = np.load(f'Anomaly-Detection-CKNN-PyTorch/meta/test_lengths_{dataset_name}.npy')
+    labels = np.load(f'Anomaly-Detection-CKNN-PyTorch/meta/frame_labels_{dataset_name}.npy')
     vnames = vad.get_vnames(dataset_name, mode='test')
     lengths = np.concatenate([[0], lengths])
 
@@ -162,7 +164,7 @@ def main(args, config):
         lengths_cum = np.load(f"{base_dir}/meta/test_lengths_{dataset_name}.npy")
         vnames = vad.get_vnames(dataset_name, mode="test")
         
-        # ✅ Convert cumulative lengths to per-video lengths
+        # Convert cumulative lengths to per-video lengths
         lengths = np.diff(np.concatenate([[0], lengths_cum]))
         
         frame_labels = np.load(f"{base_dir}/meta/frame_labels_{dataset_name}.npy")
@@ -197,10 +199,6 @@ def main(args, config):
 
             video = frame_to_video[frame_idx]
             local_idx = frame_idx - first_idx_of[video]
-            # frame_vec = np.mean(feats, axis=0, keepdims=True)
-            # gt_label = int(frame_labels[frame_idx])
-
-            # result = explainer.explain(frame_vec, gt_label=gt_label)[0]
             patch_idx  = int(np.argmax(scores))          # scores is the per-patch CKNN list
             patch_vec  = feats[patch_idx : patch_idx+1]  # shape (1, D)  -> keeps API happy
            
@@ -210,20 +208,21 @@ def main(args, config):
             result     = explainer.explain(patch_vec, gt_label=gt_label)[0]
             result["score"] = float(max(scores))
 
-            # === Plot Top-10 Similarity Scores ===
+            # === Plot Top-5/10 Similarity Scores ===
             sims = result["cosine_before"]
             topk_sim = np.argsort(sims)[-10:][::-1]
             labels_sim = [prompts[i] for i in topk_sim]
             values_sim = np.array(sims)[topk_sim]
             colors_sim = [get_prompt_color(p) for p in labels_sim]
 
+            # Uncomment to plot Similarity charts
             # fig1, ax1 = plt.subplots(figsize=(12, 8))
             # ax1.barh(labels_sim, values_sim, color=colors_sim)
             # ax1.invert_yaxis()
             # #ax1.set_title(f"{video} frame {local_idx} Top-10 Prompt Similarities")
             # fig1.tight_layout()
             
-            # # --- Save high-res figure for LaTeX ---
+            # # --- Save high-res---
             # fig1.savefig(
             #     f"outputs/xai/{video}_frame_{local_idx:03d}_sims.png",
             #     dpi=500,              # High resolution for print
@@ -231,51 +230,51 @@ def main(args, config):
             # )
             # plt.close(fig1)
 
-            # === Plot Top-10 Directional Influence (TCAV) ===
+            # === Plot Top-5/10 Directional Influence (TCAV) ===
             di = np.array(result["normalized_directional_influence"])        
             # spread values *inside this frame* so tallest bars stand out
-            di = (di - di.mean()) / (di.std())    # ← add this line
+            di = (di - di.mean()) / (di.std())    
             # Save full normalized DI vector
             result["di_normalized_full"] = di.tolist()
-            result["all_prompts_order"] = prompts
-            #di = -di  
+            result["all_prompts_order"] = prompts       
+            
+            # # Top-10 increasing prompts  
             top_inc_idx = np.argsort(di)[-10:][::-1]
             labels_inc = [prompts[i] for i in top_inc_idx]
             values_inc = di[top_inc_idx]
-            colors_inc = [get_prompt_color(p) for p in labels_inc]
+            colors_inc = [get_prompt_color(p) for p in labels_inc]            
 
+            # --- DI increase ---
+            # Uncomment to plot di increase charts
+            # fig_inc, ax_inc = plt.subplots(figsize=FIGSIZE)
+            # ax_inc.barh(labels_inc, values_inc, color=colors_inc)
+            # ax_inc.set_xlabel("Directional Influence")
+            # ax_inc.set_ylabel("Concepts")
+            # ax_inc.invert_yaxis()
+            # boldify(ax_inc)
+            # fig_inc.tight_layout()
+            # fig_inc.savefig(f"outputs/xai/{video}_frame_{local_idx:03d}_tcav_inc.pdf",
+            #                 dpi=500, bbox_inches="tight")
+            # plt.close(fig_inc)
             
-            # --- TCAV increase ---
-            fig_inc, ax_inc = plt.subplots(figsize=FIGSIZE)
-            ax_inc.barh(labels_inc, values_inc, color=colors_inc)
-            ax_inc.set_xlabel("Directional Influence")
-            ax_inc.set_ylabel("Concepts")
-            ax_inc.invert_yaxis()
-            boldify(ax_inc)
-            fig_inc.tight_layout()
-            fig_inc.savefig(f"outputs/xai/{video}_frame_{local_idx:03d}_tcav_inc.pdf",
-                            dpi=500, bbox_inches="tight")
-            plt.close(fig_inc)
-
-
-            
-            # # Top-10 decreasing prompts
+            # # Top-10 decreasing prompts            
             top_dec_idx = np.argsort(di)[:10]
             labels_dec = [prompts[i] for i in top_dec_idx]
             values_dec = di[top_dec_idx]
             colors_dec = [get_prompt_color(p) for p in labels_dec]
             
-            # --- TCAV decrease ---
-            fig_dec, ax_dec = plt.subplots(figsize=FIGSIZE)
-            ax_dec.barh(labels_dec, values_dec, color=colors_dec)
-            ax_dec.set_xlabel("Directional Influence")
-            ax_dec.set_ylabel("Concepts")
-            ax_dec.invert_yaxis()
-            boldify(ax_dec)
-            fig_dec.tight_layout()
-            fig_dec.savefig(f"outputs/xai/{video}_frame_{local_idx:03d}_tcav_dec.pdf",
-                            dpi=500, bbox_inches="tight")
-            plt.close(fig_dec)
+            # --- DI decrease ---
+            # Uncomment to plot di decrease charts
+            # fig_dec, ax_dec = plt.subplots(figsize=FIGSIZE)
+            # ax_dec.barh(labels_dec, values_dec, color=colors_dec)
+            # ax_dec.set_xlabel("Directional Influence")
+            # ax_dec.set_ylabel("Concepts")
+            # ax_dec.invert_yaxis()
+            # boldify(ax_dec)
+            # fig_dec.tight_layout()
+            # fig_dec.savefig(f"outputs/xai/{video}_frame_{local_idx:03d}_tcav_dec.pdf",
+            #                 dpi=500, bbox_inches="tight")
+            # plt.close(fig_dec)
 
             # === Save full plot-relevant dict ===
             tcav_plot_full[(video, local_idx)] = {
@@ -317,11 +316,9 @@ def main(args, config):
             "top10_di_dec_colors": colors_dec,
             })
 
-            per_frame_tcav[(video, frame_idx)] = result
-
-        # np.save("outputs/xai/tcav_per_frame.npy", per_frame_tcav)
-        np.save("outputs/xai/tcav_per_frame_shan.npy", per_frame_tcav)           # ← the original full one
-        np.save("outputs/xai/tcav_per_frame_for_plot_shan.npy", tcav_plot_full)   # ← the clean plot-specific one
+            per_frame_tcav[(video, frame_idx)] = result        
+       
+        np.save("outputs/xai/di_per_frame_for_plot_shan.npy", tcav_plot_full)  
 
 
     d['te_score'] = d_scores_save
@@ -340,7 +337,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, required=True)
 
-    parser.add_argument("--dataset_name", default='ped2', choices=['shanghaitech', 'avenue', 'ped2'])
+    parser.add_argument("--dataset_name", default='ped2', choices=['shanghaitech', 'ped2'])
     parser.add_argument("--mode", default='partial', choices=['partial', 'merge'])
 
     parser.add_argument("--quiet", action='store_true', default=True)
