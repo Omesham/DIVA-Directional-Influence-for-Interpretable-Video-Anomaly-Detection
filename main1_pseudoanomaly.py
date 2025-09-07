@@ -26,7 +26,7 @@ def main():
     dataset_name = args.dataset_name
     uvadmode = args.uvadmode
 
-    dpath = f'/mmfs1/scratch/jacks.local/ojanigala/Anomaly-Detection-CKNN-XAI/features/{dataset_name}/cleansescores'
+    dpath = f'/Anomaly-Detection-CKNN-XAI/features/{dataset_name}/cleansescores'
 
     if args.mode == 'app':
         ret = cleanse.AppAErecon(dataset_name, uvadmode).infer()
@@ -44,4 +44,5 @@ def main():
 
 
 if __name__ == '__main__':
+
     main()
