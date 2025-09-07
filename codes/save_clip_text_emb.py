@@ -4,6 +4,7 @@ import clip
 import torch
 import numpy as np
 
+#PED2 
 normal_prompts = [
     "pedestrians walking together on a campus walkway",
     "several students strolling side by side along the sidewalk",
@@ -16,7 +17,8 @@ anomalous_prompts = [
     "a person driving a maintenance cart on the pedestrian path"   
 ]
 
- 
+
+#STC
 # normal_prompts = [   
 #     "group of people walking",
 #     "a group chatting casually while sitted",
@@ -40,13 +42,10 @@ def main():
 
     # 1. Tokenize & encode
     with torch.no_grad():
-        tokens   = clip.tokenize(prompts).to(device)           # [42, token_len]
-        text_emb = model.encode_text(tokens).float().cpu().numpy()  # [42, D]
+        tokens   = clip.tokenize(prompts).to(device)           
+        text_emb = model.encode_text(tokens).float().cpu().numpy()    
 
-    # 2. Normalize
-    text_emb /= np.linalg.norm(text_emb, axis=1, keepdims=True)
-
-    # 3. Save
+    # 2. Save
     np.save("clip_text_emb.npy", text_emb)
     print("✅ Saved text embeddings to clip_text_emb.npy")
 
