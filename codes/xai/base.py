@@ -12,7 +12,7 @@ class BaseExplainer(ABC):
         self.grader = grader            # KNNGrader (black‑box scorer)
         self.train_feats = train_feats  # (N_train, D)
 
-    # Helper every explainer can reuse
+    # Helper every explainer can reuse future proof
     def _score_batch(self, X):
         """Return CKNN anomaly score for each row in X (shape [M, D])."""
         return np.array([self.grader.grade_flat(x[None, :])[0] for x in X])
