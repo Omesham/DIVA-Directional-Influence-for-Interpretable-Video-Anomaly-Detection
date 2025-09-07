@@ -66,7 +66,7 @@ def main(args, config):
     d_scores = obj.get_framesignal_maximum()
     d_scores_save.update(d_scores)
 
-    # Optional post-processing with Gaussian smoothing
+    # Post-processing with Gaussian smoothing cknn
     if config.postprocess.sigma > 0:
         d_scores = gaussian_video_d(d_scores, config.postprocess.sigma)
 
@@ -140,3 +140,4 @@ if __name__ == '__main__':
     config_ = load_config(args_.config, args_)
 
     main(args_, config_)
+
