@@ -113,7 +113,7 @@ This saves text embeddings needed for the directional influence calculations.
 Run the DIVA directional influence computation:
 
 ```bash
-python create_di_scores.py --config configs/ped2.yaml --dataset_name ped2
+!./run2_evaluate.sh shanghaitech
 ```
 
 This computes per-frame DI scores using the CLIP-aligned concept vectors.
