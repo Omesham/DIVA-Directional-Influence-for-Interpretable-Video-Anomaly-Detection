@@ -30,15 +30,6 @@ This repository includes the official PyTorch implementation of **CKNN**, introd
 ```bash
 pip install -r requirements.txt
 ```
-
-Make sure `requirements.txt` includes:
-
-```
-openai==1.99.9
-clip-anytorch==2.6.0
-open_clip_torch==2.32.0
-```
-
 ---
 
 ## 📦 Data Preparation
