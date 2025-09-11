@@ -96,7 +96,7 @@ This will generate unique object classes (e.g., bicycle, person) to be passed to
 Run the prompt generator using GPT-5:
 
 ```bash
-python codes/Generate_text_prompts_gpt5.py
+python codes/generate_text_prompts_gpt5.py
 ```
 
 This will generate concept prompts (e.g., sitting, running, fighting) used for directional influence.
