@@ -85,6 +85,13 @@ CKNN/
 ---
 
 ### Step 5. Generate Textual Prompts
+Run to generate unique object classes list:
+
+```bash
+python codes/generate_unique_object_class_list.py
+```
+
+This will generate unique object classes (e.g., bicycle, person) to be passed to Gpt-5 LLM.
 
 Run the prompt generator using GPT-5:
 
