@@ -26,7 +26,6 @@ anomalous_prompts = [
 #     "a group sitting on a bench or ledge by the walkway"
 # ]
 
-# #Refined Anomalous Prompts
 # anomalous_prompts = [
 #     "a person riding a bicycle",
 #     "a person skateboarding",
