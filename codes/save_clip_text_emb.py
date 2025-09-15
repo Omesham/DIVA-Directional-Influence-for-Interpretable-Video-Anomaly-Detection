@@ -47,7 +47,7 @@ def main():
 
     # 2. Save
     np.save("clip_text_emb.npy", text_emb)
-    print("✅ Saved text embeddings to clip_text_emb.npy")
+    print("Saved text embeddings to clip_text_emb.npy")
 
 if __name__ == "__main__":
     main()
